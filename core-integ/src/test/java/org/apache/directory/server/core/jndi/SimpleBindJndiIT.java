@@ -381,7 +381,7 @@ public class SimpleBindJndiIT extends AbstractLdapTestUnit
         // Set up the environment for creating the initial context
         Hashtable<String, Object> env = setDefaultJNDIEnv( CoreContextFactory.class.getName() );
         env.put( Context.PROVIDER_URL, "ou=system" );
-        env.put( Context.SECURITY_PRINCIPAL, "uid=\"admin\",ou=\"system\"" );
+        env.put( Context.SECURITY_PRINCIPAL, "uid=admin,ou=system" );
 
         DirContext ctx = null;
 

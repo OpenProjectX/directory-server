@@ -908,7 +908,7 @@ public class AddIT extends AbstractLdapTestUnit
         attrs.put( "sn", "Bean" );
         attrs.put( "cn", "Jim, Bean" );
 
-        DirContext jimBeanCtx = ctx.createSubcontext( "cn=\"Jim, Bean\"", attrs );
+        DirContext jimBeanCtx = ctx.createSubcontext( "cn=Jim\\, Bean", attrs );
 
         assertNotNull( jimBeanCtx );
     }

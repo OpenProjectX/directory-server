@@ -30,7 +30,6 @@
       <bundle>mvn:http://repository.springsource.com/maven/bundles/external!org.bouncycastle/com.springsource.org.bouncycastle.jce/1.39.0</bundle>
       <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-lang/2.4_2-SNAPSHOT</bundle>
       <bundle>mvn:org.apache.collections/org.apache.collections/${commons-collections.version}</bundle>
-      <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/3.0.1_2-SNAPSHOT</bundle>
       <bundle>mvn:org.apache.mina/mina-core/2.0.1</bundle>
       <bundle>mvn:org.apache.xbean/xbean-spring/${xbean.version}</bundle>
       <bundle>mvn:org.apache.directory.server/apacheds-osgi/${apache.directory.version}</bundle>

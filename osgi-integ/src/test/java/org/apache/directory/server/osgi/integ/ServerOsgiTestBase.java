@@ -64,7 +64,6 @@ public abstract class ServerOsgiTestBase
     private static Set<String> SKIPS = new HashSet<String>();
     static
     {
-        // SKIPS.add( "antlr-2.7.7.jar" );
         // SKIPS.add( "xpp3-1.1.4c.jar" );
         // SKIPS.add( "dom4j-1.6.1.jar" );
     }

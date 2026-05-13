@@ -55,27 +55,28 @@
     <!-- Set versions for depending jars -->
     <ant.version>1.10.15</ant.version>
     <bcprov.version>1.83</bcprov.version>
+    <caffeine.version>2.9.3</caffeine.version>
     <commons.cli.version>1.11.0</commons.cli.version>
-    <commons.codec.version>1.21.0</commons.codec.version>
+    <commons.codec.version>1.22.0</commons.codec.version>
     <commons.collections.version>4.5.0</commons.collections.version>
     <commons.daemon.version>1.5.1</commons.daemon.version>
     <commons.lang.version>3.20.0</commons.lang.version>
     <commons.net.version>3.13.0</commons.net.version>
     <commons.pool.version>2.13.1</commons.pool.version>
+    <!--commons.text.version>1.15.0</commons.text.version -->
     <dnsjava.version>3.6.4</dnsjava.version>
-    <caffeine.version>2.9.3</caffeine.version>
     <findbugs.annotations.version>1.0.0</findbugs.annotations.version>
-    <forbiddenapis.version>3.8</forbiddenapis.version>
+    <forbiddenapis.version>3.10</forbiddenapis.version>
     <hamcrest.version>3.0</hamcrest.version>
     <jetty.version>9.4.58.v20250814</jetty.version>
     <!-- The Jetty bundle exports are using version 9.4.5, not 9.4.5.v20170502... -->
     <jetty.bundle.version>9.4.48</jetty.bundle.version>
-    <junit.jupiter.api.version>5.14.3</junit.jupiter.api.version>
+    <junit.jupiter.api.version>5.14.4</junit.jupiter.api.version>
     <kerby.version>2.1.1</kerby.version>
     <ldapsdk.version>4.1</ldapsdk.version>
     <logback.version>1.5.32</logback.version>
     <maven.version>3.9.14</maven.version>
-    <mina.core.version>2.2.5</mina.core.version>
+    <mina.core.version>2.2.7</mina.core.version>
     <org.apache.felix.version>7.0.5</org.apache.felix.version>
     <pax-exam.version>4.13.4</pax-exam.version>
     <pax-url.version>2.6.16</pax-url.version>

@@ -441,7 +441,7 @@ public class SimpleBindIT extends AbstractLdapTestUnit
     {
         LdapConnection connection = new LdapNetworkConnection( Network.LOOPBACK_HOSTNAME, getLdapServer().getPort() );
 
-        connection.bind( "uid=\"admin\",ou=\"system\"", "secret" );
+        connection.bind( "uid=admin,ou=system", "secret" );
         assertTrue( connection.isAuthenticated() );
         connection.close();
     }

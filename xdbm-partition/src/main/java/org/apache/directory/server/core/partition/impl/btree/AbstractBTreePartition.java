@@ -1276,15 +1276,6 @@ public abstract class AbstractBTreePartition extends AbstractPartition implement
     
             Entry result = fetch( partitionTxn, id, lookupContext.getDn() );
             
-            if ( result == null )
-            {
-                System.out.println( "Entry not found!!!" );
-            }
-            else
-            {
-                System.out.println( "Entry found:" + result.getDn() );
-            }
-            
             return result;
         }
         catch ( Exception e )
