@@ -127,7 +127,7 @@ public class ConfigurableHashingInterceptor extends BaseInterceptor
             // check if the given field is already hashed
             LdapSecurityConstants existingAlgo = PasswordUtil.findAlgorithm( bytes );
             
-            if ( existingAlgo == null ) 
+            if ( existingAlgo == null && algorithm != null ) 
             {
                 // not already hashed, so hash it
                 values.add( PasswordUtil.createStoragePassword( bytes, algorithm ) );

@@ -161,7 +161,7 @@ public abstract class PasswordHashingInterceptor extends BaseInterceptor
             LdapSecurityConstants existingAlgo = PasswordUtil.findAlgorithm( userPassword.getBytes() );
 
             // if there exists NO algorithm, then hash the password
-            if ( existingAlgo == null )
+            if ( existingAlgo == null && algorithm != null )
             {
                 byte[] hashedPassword = PasswordUtil.createStoragePassword( userPassword.getBytes(), algorithm );
 
