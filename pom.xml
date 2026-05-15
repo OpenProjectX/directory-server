@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.directory.project</groupId>
     <artifactId>project</artifactId>
-    <version>50</version>
+    <version>51-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -1250,6 +1250,13 @@
         <artifactId>maven-core</artifactId>
         <version>${maven.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <scope>provided</scope>
+      </dependency> 
+
 
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
