@@ -162,13 +162,13 @@ public class LdapServer extends DirectoryBackedService
 
     /**
      * The maximum size limit.
-     * @see {@link LdapServer#MAX_SIZE_LIMIT_DEFAULT }
+     * @see LdapServer#MAX_SIZE_LIMIT_DEFAULT
      */
     private long maxSizeLimit = MAX_SIZE_LIMIT_DEFAULT;
 
     /**
      * The maximum time limit.
-     * @see {@link LdapServer#MAX_TIME_LIMIT_DEFAULT }
+     * @see LdapServer#MAX_TIME_LIMIT_DEFAULT
      */
     private int maxTimeLimit = MAX_TIME_LIMIT_DEFAULT;
 

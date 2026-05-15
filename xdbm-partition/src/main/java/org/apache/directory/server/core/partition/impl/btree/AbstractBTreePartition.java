@@ -207,7 +207,7 @@ public abstract class AbstractBTreePartition extends AbstractPartition implement
     /** A lock to protect the backend from concurrent reads/writes */
     private ReadWriteLock rwLock;
 
-    /** a cache to hold <entryUUID, Dn> pairs, this is used for speeding up the buildEntryDn() method */
+    /** a cache to hold ;lt;entryUUID, Dn&gt; pairs, this is used for speeding up the buildEntryDn() method */
     private Cache<String, Dn> entryDnCache;
     
     /** a semaphore to serialize the writes on context entry while updating contextCSN attribute */
@@ -2387,7 +2387,7 @@ public abstract class AbstractBTreePartition extends AbstractPartition implement
      * @param partitionTxn The transaction to use
      * @param modAvs The modified AVAs
      * @param entryId The Entry ID
-     * @throws {@link LdapException} If the AVA cannt be processed properly
+     * @throws LdapException If the AVA cannt be processed properly
      * @throws IndexNotFoundException If teh index is not found
      */
     private void processModifiedAvas( PartitionTxn partitionTxn, Map<String, List<ModDnAva>> modAvas, String entryId ) 

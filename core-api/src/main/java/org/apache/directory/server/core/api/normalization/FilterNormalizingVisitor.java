@@ -127,7 +127,7 @@ public class FilterNormalizingVisitor implements FilterVisitor
 
     /**
      * A private method used to normalize a value. At this point, the value
-     * is a Value<byte[]>, we have to translate it to a Value<String> if its
+     * is a Value&lt;byte[]&gt;, we have to translate it to a Value<String> if its
      * AttributeType is H-R. Then we have to normalize the value accordingly
      * to the AttributeType Normalizer.
      * 
