@@ -30,13 +30,21 @@ pipeline {
     disableConcurrentBuilds()
   }
   
+    parameters {
+      choice(name: 'nodeLabel', choices: ['ubuntu', 'arm', 'Windows'])
+      choice(name: 'jdkVersion', choices: ['jdk_11_latest', 'jdk_17_latest', 'jdk_21_latest', 'jdk_25_latest', 'jdk_11_latest_windows', 'jdk_17_latest_windows', 'jdk_21_latest_windows', 'jdk_25_latest_windows'])
+      booleanParam(name: 'deployEnabled', defaultValue: true)
+      booleanParam(name: 'sonarEnabled', defaultValue: true)
+      booleanParam(name: 'testsEnabled', defaultValue: true)
+  }
+
   triggers {
     cron('@weekly')
     pollSCM('@daily')
   }
   
   stages {
-      stage('Initialization') {
+    stage('Initialization') {
       steps {
         echo "running on ${env.NODE_NAME}"
         echo 'Building branch ' + env.BRANCH_NAME
@@ -81,7 +89,6 @@ pipeline {
         sh 'mvn clean install'
       }
     }
-
 
     stage('Build JDK 25 Linux') {
       tools {
@@ -131,6 +138,7 @@ pipeline {
       }
     }
     
+    /*
     stage ('Build Installers') {
       options {
         timeout(time: 2, unit: 'HOURS')
@@ -235,6 +243,7 @@ pipeline {
         }
       }
     }
+    */
   }
   
   post {
