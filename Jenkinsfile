@@ -17,113 +17,96 @@
  * under the License.
  */
 pipeline {
-  agent none
+  agent any
+  
+  tools {
+    maven 'maven_3_latest'
+    jdk params.jdkVersion
+  }
+
   options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
     timeout(time: 12, unit: 'HOURS')
+    disableConcurrentBuilds()
   }
+  
   triggers {
     cron('@weekly')
     pollSCM('@daily')
   }
+  
   stages {
-    stage ('Debug') {
-      options {
-        timeout(time: 1, unit: 'HOURS')
-        retry(2)
+      stage('Initialization') {
+      steps {
+        echo "running on ${env.NODE_NAME}"
+        echo 'Building branch ' + env.BRANCH_NAME
+        echo 'Using PATH ' + env.PATH
       }
-      agent {
-        docker {
-          label 'ubuntu'
-          image 'apachedirectory/maven-build:jdk-8'
-          alwaysPull true
-          args '-v $HOME/.m2:/home/hnelson/.m2'
-        }
+    }
+
+    stage('Cleanup') {
+      steps {
+        echo 'Cleaning up the workspace'
+        deleteDir()
+      }
+    }
+
+    stage('Checkout') {
+      steps {
+        echo 'Checking out branch ' + env.BRANCH_NAME
+        checkout scm
+      }
+    }
+
+    stage('Build JDK 17 Linux') {
+      tools {
+        jdk "jdk_17_latest"
       }
       steps {
-        sh 'env'
-      }
-      post {
-        always {
-          deleteDir()
-        }
+        echo 'Building JDK 17 Linux'
+        sh 'java -version'
+        sh 'mvn -version'
+        sh 'mvn clean install'
       }
     }
-    stage ('Build and Test') {
-      parallel {
-        stage ('Linux Java 8') {
-          options {
-            timeout(time: 4, unit: 'HOURS')
-            retry(2)
-          }
-          agent {
-            docker {
-              label 'ubuntu'
-              image 'apachedirectory/maven-build:jdk-8'
-              alwaysPull true
-              args '-v $HOME/.m2:/home/hnelson/.m2'
-            }
-          }
-          steps {
-            sh '''
-            mvn -V -U clean verify
-            '''
-          }
-          post {
-            always {
-              junit '**/target/surefire-reports/*.xml'
-              deleteDir()
-            }
-          }
-        }
-        stage ('Linux Java 11') {
-          options {
-            timeout(time: 4, unit: 'HOURS')
-            retry(2)
-          }
-          agent {
-            docker {
-              label 'ubuntu'
-              image 'apachedirectory/maven-build:jdk-11'
-              alwaysPull true
-              args '-v $HOME/.m2:/home/hnelson/.m2'
-            }
-          }
-          steps {
-            sh 'mvn -V -U clean verify'
-          }
-          post {
-            always {
-              junit '**/target/surefire-reports/*.xml'
-              deleteDir()
-            }
-          }
-        }
-        stage ('Linux Java 17') {
-          options {
-            timeout(time: 4, unit: 'HOURS')
-            retry(2)
-          }
-          agent {
-            docker {
-              label 'ubuntu'
-              image 'apachedirectory/maven-build:jdk-17'
-              alwaysPull true
-              args '-v $HOME/.m2:/home/hnelson/.m2'
-            }
-          }
-          steps {
-            sh 'mvn -V -U clean verify'
-          }
-          post {
-            always {
-              junit '**/target/surefire-reports/*.xml'
-              deleteDir()
-            }
-          }
-        }
+
+    stage('Build JDK 21 Linux') {
+      tools {
+        jdk "jdk_21_latest"
+      }
+      steps {
+        echo 'Building JDK 21 Linux'
+        sh 'java -version'
+        sh 'mvn -version'
+        sh 'mvn clean install'
       }
     }
+
+
+    stage('Build JDK 25 Linux') {
+      tools {
+        jdk "jdk_25_latest"
+      }
+      steps {
+        echo 'Building JDK 25 Linux'
+        sh 'java -version'
+        sh 'mvn -version'
+        sh 'mvn clean install'
+      }
+    }
+
+    stage('Build JDK 26 Linux') {
+      tools {
+        jdk "jdk_26_latest"
+      }
+      steps {
+        echo 'Building JDK 26 Linux'
+        sh 'java -version'
+        sh 'mvn -version'
+        sh 'mvn clean install'
+      }
+    }
+
     stage ('Deploy') {
       options {
         timeout(time: 4, unit: 'HOURS')
@@ -147,6 +130,7 @@ pipeline {
         }
       }
     }
+    
     stage ('Build Installers') {
       options {
         timeout(time: 2, unit: 'HOURS')
@@ -155,7 +139,7 @@ pipeline {
       agent {
         docker {
           label 'ubuntu'
-          image 'apachedirectory/maven-build:jdk-8'
+          image 'apachedirectory/maven-build:jdk-25'
           alwaysPull true
           args '-v $HOME/.m2:/home/hnelson/.m2'
         }
@@ -174,6 +158,7 @@ pipeline {
         }
       }
     }
+    
     stage ('Test Installers') {
       parallel {
         stage ('deb') {
@@ -251,6 +236,7 @@ pipeline {
       }
     }
   }
+  
   post {
     failure {
       mail to: 'notifications@directory.apache.org',
