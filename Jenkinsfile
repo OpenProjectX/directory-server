@@ -66,18 +66,6 @@ pipeline {
       }
     }
 
-    stage('Build JDK 17 Linux') {
-      tools {
-        jdk "jdk_17_latest"
-      }
-      steps {
-        echo 'Building JDK 17 Linux'
-        sh 'java -version'
-        sh 'mvn -version'
-        sh 'mvn clean install'
-      }
-    }
-
     stage('Build JDK 21 Linux') {
       tools {
         jdk "jdk_21_latest"
