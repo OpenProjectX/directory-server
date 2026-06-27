@@ -42,7 +42,8 @@ public class ApacheDsContainer extends GenericContainer<ApacheDsContainer>
     public static final String ACTIVE_DIRECTORY_FIXTURE_RESOURCE =
         "org/apache/directory/server/testcontainers/active-directory/10-example-directory.ldif";
 
-    public static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse( "apachedirectory/apacheds" );
+    public static final DockerImageName DEFAULT_IMAGE_NAME =
+        DockerImageName.parse( "ghcr.io/openprojectx/directory-server/apacheds:latest" );
 
     public static final int LDAP_PORT = 10389;
 

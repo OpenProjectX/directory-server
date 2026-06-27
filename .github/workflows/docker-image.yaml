@@ -70,9 +70,12 @@ jobs:
             echo "Could not find root project version in pom.xml" >&2
             exit 1
           fi
+          version_tag="$(printf '%s' "${version}" | sed 's/[^A-Za-z0-9_.-]/-/g')"
           echo "image_name=${image_name}" >> "${GITHUB_OUTPUT}"
           echo "sha_tag=${sha_tag}" >> "${GITHUB_OUTPUT}"
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "version_tag=${version_tag}" >> "${GITHUB_OUTPUT}"
+          echo "latest_tag=latest" >> "${GITHUB_OUTPUT}"
 
       - name: Build Docker image with Maven
         run: >
@@ -81,11 +84,19 @@ jobs:
           -Dorg.apache.directory.api.version=2.1.8
           -Dapacheds.docker.image=${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}
 
+      - name: Add Docker image tags
+        if: github.event_name != 'pull_request'
+        run: |
+          docker tag \
+            "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}" \
+            "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.version_tag }}"
+          docker tag \
+            "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}" \
+            "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.latest_tag }}"
+
       - name: Publish Docker image to GHCR
         if: github.event_name != 'pull_request'
-        run: >
-          mvn -B -Pdocker -DskipTests
-          -pl docker-image
-          -Dorg.apache.directory.api.version=2.1.8
-          -Dapacheds.docker.image=${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}
-          io.fabric8:docker-maven-plugin:0.45.1:push
+        run: |
+          docker push "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}"
+          docker push "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.version_tag }}"
+          docker push "${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.latest_tag }}"
