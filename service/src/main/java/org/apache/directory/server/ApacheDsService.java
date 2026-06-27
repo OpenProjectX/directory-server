@@ -97,6 +97,9 @@ public class ApacheDsService
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( ApacheDsService.class );
 
+    /** System property used to point to startup LDIF entries. */
+    private static final String PROPERTY_LDIF_DIRECTORY = "apacheds.ldif.dir";
+
     /** The LDAP server instance */
     private LdapServer ldapServer;
 
@@ -360,6 +363,14 @@ public class ApacheDsService
 
         DirectoryService directoryService = ServiceBuilder.createDirectoryService( directoryServiceBean,
             instanceLayout, schemaManager );
+
+        String ldifDirectory = System.getProperty( PROPERTY_LDIF_DIRECTORY );
+
+        if ( ldifDirectory != null && !ldifDirectory.trim().isEmpty() )
+        {
+            LOG.info( "Loading startup LDIF entries from {}", ldifDirectory );
+            directoryService.setTestEntries( ServiceBuilder.readTestEntries( ldifDirectory ) );
+        }
 
         // Inject the DnFactory
         directoryService.setDnFactory( dnFactory );
