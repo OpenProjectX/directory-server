@@ -130,6 +130,10 @@ image and publishes a reusable test library. Downstream tests can depend on
 `org.apache.directory.server:apacheds-testcontainers` and use
 `org.apache.directory.server.testcontainers.ApacheDsContainer`.
 
+The library also includes `withActiveDirectoryFixture()`, an LDAP-facing Active
+Directory simulation fixture for common user, group, and computer account
+queries. See `testcontainers/README.md` for its scope and limitations.
+
 Build the image first, then run the module's smoke test with the same tag:
 
 ```sh

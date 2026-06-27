@@ -27,7 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.directory.api.ldap.codec.api.LdapApiServiceFactory;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.DefaultModification;
@@ -36,6 +39,7 @@ import org.apache.directory.api.ldap.model.entry.ModificationOperation;
 import org.apache.directory.api.ldap.model.ldif.LdifEntry;
 import org.apache.directory.api.ldap.model.ldif.LdifReader;
 import org.apache.directory.api.ldap.model.message.SearchScope;
+import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.DockerClientFactory;
@@ -184,11 +188,113 @@ class ApacheDsContainerTest
     }
 
 
+    @Test
+    void canLoadActiveDirectoryFixture() throws Exception
+    {
+        try ( ApacheDsContainer container = startActiveDirectoryFixture();
+            LdapNetworkConnection connection = container.createAdminConnection() )
+        {
+            Entry alice = searchSingle( connection, "dc=example,dc=com", "(sAMAccountName=aadams)" );
+            assertEquals( "alice.adams@example.com", alice.get( "userPrincipalName" ).getString() );
+            assertEquals( "S-1-5-21-1000000000-1000000001-1000000002-1101",
+                alice.get( "objectSid" ).getString() );
+            assertEquals( "cn=Engineering,ou=Groups,dc=example,dc=com", alice.get( "memberOf" ).getString() );
+
+            Entry computer = searchSingle( connection, "dc=example,dc=com", "(sAMAccountName=APP01$)" );
+            assertEquals( "4096", computer.get( "userAccountControl" ).getString() );
+        }
+    }
+
+
+    @Test
+    void canSearchActiveDirectoryFixtureGroups() throws Exception
+    {
+        try ( ApacheDsContainer container = startActiveDirectoryFixture();
+            LdapNetworkConnection connection = container.createAdminConnection() )
+        {
+            List<String> directGroups = searchDns( connection, "ou=Groups,dc=example,dc=com",
+                "(member=cn=Alice Adams,ou=Users,dc=example,dc=com)" );
+            assertTrue( directGroups.contains( "cn=Engineering,ou=Groups,dc=example,dc=com" ) );
+            assertTrue( directGroups.contains( "cn=All Staff,ou=Groups,dc=example,dc=com" ) );
+
+            Entry nestedGroup = searchSingle( connection, "ou=Groups,dc=example,dc=com",
+                "(member=cn=Engineering,ou=Groups,dc=example,dc=com)" );
+            assertEquals( "All Staff", nestedGroup.get( "cn" ).getString() );
+        }
+    }
+
+
+    @Test
+    void canBindAsActiveDirectoryFixtureUser() throws Exception
+    {
+        try ( ApacheDsContainer container = startActiveDirectoryFixture();
+            LdapNetworkConnection connection = createConnection( container,
+                "cn=Alice Adams,ou=Users,dc=example,dc=com", "secret" ) )
+        {
+            Entry alice = connection.lookup( "cn=Alice Adams,ou=Users,dc=example,dc=com" );
+            assertNotNull( alice );
+            assertEquals( "aadams", alice.get( "sAMAccountName" ).getString() );
+        }
+    }
+
+
     private ApacheDsContainer startContainer()
     {
         ApacheDsContainer container = newContainer();
         container.start();
         return container;
+    }
+
+
+    private ApacheDsContainer startActiveDirectoryFixture()
+    {
+        ApacheDsContainer container = newContainer().withActiveDirectoryFixture();
+        container.start();
+        return container;
+    }
+
+
+    private Entry searchSingle( LdapNetworkConnection connection, String baseDn, String filter ) throws Exception
+    {
+        try ( EntryCursor cursor = connection.search( baseDn, filter, SearchScope.SUBTREE, "*" ) )
+        {
+            assertTrue( cursor.next() );
+            Entry entry = cursor.get();
+            assertFalse( cursor.next() );
+            return entry;
+        }
+    }
+
+
+    private List<String> searchDns( LdapNetworkConnection connection, String baseDn, String filter ) throws Exception
+    {
+        List<String> dns = new ArrayList<>();
+
+        try ( EntryCursor cursor = connection.search( baseDn, filter, SearchScope.SUBTREE, "cn" ) )
+        {
+            while ( cursor.next() )
+            {
+                dns.add( cursor.get().getDn().getName() );
+            }
+        }
+
+        return dns;
+    }
+
+
+    private LdapNetworkConnection createConnection( ApacheDsContainer container, String bindDn, String password )
+        throws Exception
+    {
+        LdapConnectionConfig config = new LdapConnectionConfig();
+        config.setLdapHost( container.getLdapHost() );
+        config.setLdapPort( container.getLdapPort() );
+        config.setName( bindDn );
+        config.setCredentials( password );
+        config.setLdapApiService( LdapApiServiceFactory.getSingleton() );
+
+        LdapNetworkConnection connection = new LdapNetworkConnection( config );
+        connection.bind( bindDn, password );
+        return connection;
     }
 
 

@@ -36,6 +36,12 @@ import org.testcontainers.utility.DockerImageName;
 
 public class ApacheDsContainer extends GenericContainer<ApacheDsContainer>
 {
+    public static final String ACTIVE_DIRECTORY_SCHEMA_RESOURCE =
+        "org/apache/directory/server/testcontainers/active-directory/00-ad-compat-schema.ldif";
+
+    public static final String ACTIVE_DIRECTORY_FIXTURE_RESOURCE =
+        "org/apache/directory/server/testcontainers/active-directory/10-example-directory.ldif";
+
     public static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse( "apachedirectory/apacheds" );
 
     public static final int LDAP_PORT = 10389;
@@ -116,6 +122,13 @@ public class ApacheDsContainer extends GenericContainer<ApacheDsContainer>
     {
         String fileName = path.substring( Math.max( path.lastIndexOf( '/' ), path.lastIndexOf( '\\' ) ) + 1 );
         return withCopyFileToContainer( MountableFile.forHostPath( path ), DEFAULT_LDIF_DIRECTORY + "/" + fileName );
+    }
+
+
+    public ApacheDsContainer withActiveDirectoryFixture()
+    {
+        return withLdifClasspathResource( ACTIVE_DIRECTORY_SCHEMA_RESOURCE )
+            .withLdifClasspathResource( ACTIVE_DIRECTORY_FIXTURE_RESOURCE );
     }
 
 
