@@ -52,6 +52,45 @@ The image exposes LDAP on `10389` and LDAPS on `10636`. Instance data is under
 
 The default admin bind DN is `uid=admin,ou=system` with password `secret`.
 
+## Logging
+
+The image uses Log4j 1.x configuration from the instance configuration
+directory:
+
+```text
+/var/lib/apacheds/default/conf/log4j.properties
+```
+
+On first startup, the entrypoint copies the bundled default configuration into
+that path if the file does not already exist. The default configuration logs to
+stdout and to `${apacheds.log.dir}/apacheds-rolling.log`, with these levels:
+
+```properties
+log4j.rootCategory=WARN, stdout, R
+log4j.logger.org.apache.directory.server=WARN
+log4j.logger.org.apache.mina=WARN
+log4j.logger.org.apache.directory.api=FATAL
+```
+
+To change log levels, mount a custom `log4j.properties` over the instance
+configuration file:
+
+```sh
+docker run --rm \
+  -p 10389:10389 \
+  -v "$PWD/log4j.properties:/var/lib/apacheds/default/conf/log4j.properties:ro" \
+  apachedirectory/apacheds:local
+```
+
+For example, set ApacheDS server logs to debug in the mounted file:
+
+```properties
+log4j.logger.org.apache.directory.server=DEBUG
+```
+
+There is no dedicated log-level environment variable. Use a custom
+`log4j.properties` file when the container needs different logging.
+
 ## Startup LDIF Import
 
 ApacheDS can load LDIF entries during startup through its built-in test entry

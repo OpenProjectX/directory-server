@@ -84,6 +84,16 @@ jobs:
           -Dorg.apache.directory.api.version=2.1.8
           -Dapacheds.docker.image=${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}
 
+      - name: Test Docker image with Testcontainers
+        run: |
+          mvn -B -DskipTests \
+            -pl testcontainers -am install \
+            -Dorg.apache.directory.api.version=2.1.8
+          mvn -B \
+            -pl testcontainers test \
+            -Dorg.apache.directory.api.version=2.1.8 \
+            -Dapacheds.docker.image=${{ steps.image.outputs.image_name }}:${{ steps.image.outputs.sha_tag }}
+
       - name: Add Docker image tags
         if: github.event_name != 'pull_request'
         run: |
