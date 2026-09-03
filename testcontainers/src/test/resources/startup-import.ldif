@@ -1,0 +1,13 @@
+dn: ou=startup-smoke,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: startup-smoke
+
+dn: uid=startup-user,ou=startup-smoke,ou=system
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Startup User
+sn: User
+uid: startup-user

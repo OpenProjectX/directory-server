@@ -68,6 +68,7 @@
     <findbugs.annotations.version>1.0.0</findbugs.annotations.version>
     <forbiddenapis.version>3.10</forbiddenapis.version>
     <hamcrest.version>3.0</hamcrest.version>
+    <docker.maven.plugin.version>0.45.1</docker.maven.plugin.version>
     <jetty.version>9.4.58.v20250814</jetty.version>
     <!-- The Jetty bundle exports are using version 9.4.5, not 9.4.5.v20170502... -->
     <jetty.bundle.version>9.4.48</jetty.bundle.version>
@@ -84,12 +85,14 @@
     <slf4j.api.version>1.7.36</slf4j.api.version>
     <slf4j.api.bundleversion>"$«range;[==,=+)»"</slf4j.api.bundleversion>
     <slf4j.log4j12.version>${slf4j.api.version}</slf4j.log4j12.version>
+    <testcontainers.version>1.21.4</testcontainers.version>
     <wagon.ssh.version>3.5.3</wagon.ssh.version>
     <wagon.ssh.external.version>3.5.3</wagon.ssh.external.version>
     <wrapper.version>3.2.3</wrapper.version>
 
     <!-- properties used in tests -->
     <felix.cache.dir>${project.build.directory}/felix-root</felix.cache.dir>
+    <apacheds.docker.image>apachedirectory/apacheds:${project.version}</apacheds.docker.image>
 
     <!-- Properties for the maven plugins -->
     <cyclonedx.version>2.9.1</cyclonedx.version>
@@ -153,6 +156,8 @@
     <module>wrapper</module>
     <module>installers-maven-plugin</module>
     <module>installers</module>
+    <module>docker-image</module>
+    <module>testcontainers</module>
     <!--module>bulkloader</module-->
     <module>osgi-integ</module>
   </modules>
